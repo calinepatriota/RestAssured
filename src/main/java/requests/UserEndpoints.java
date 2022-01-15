@@ -16,10 +16,10 @@ public class UserEndpoints {
                         spec(spec).
                         header("Content-Type","application/json").
                         and().
-                        body(user.getUserCredentialsAsJson()).
+                        body(user.getUserCredentials()).
                         when().post("login");
 
-        user.setUserAuthToken(getValueFromResponse(loginResponse, "authorization"));
+        user.setAuthToken(getValueFromResponse(loginResponse, "authorization"));
         return loginResponse;
     }
 
@@ -66,9 +66,7 @@ public class UserEndpoints {
                 given().
                         spec(spec).
                         pathParam("_id",user._id).
-                       // header("Content-Type","application/json").
                         when().
-                       // delete("usuarios/"+user._id);
         delete("usuarios/{_id}");
         return deleteUserResponse;
     }

@@ -5,11 +5,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
-import static requests.ProductEndpoints.getProductsRequest;
-import static requests.ProductEndpoints.postProductRequest;
+import static requests.ProductEndpoints.*;
 import static requests.UserEndpoints.*;
 
 public class GetProductTests extends TestBase{
@@ -19,23 +15,23 @@ public class GetProductTests extends TestBase{
 
     @BeforeClass
     public void generateTestData(){
-        validUser1   = new User("Joao Silva", "joaosilva@email.com", "1234@A", "true");
+        validUser1   = new User("Bia Silvaa", "biasilva@email.com", "1234@A", "true");
         postUserRequest(SPEC, validUser1);
-        authenticateUserRequest(SPEC, validUser1);
-        validProduct1   = new Product(" Mouse", 100,"Teste", 1);
-        postProductRequest(SPEC, validProduct1);
-
-
-
-}
+        validProduct1   = new Product(" mesabanhotoalha", 142,"mesabanhotoalha", 1);
+        postProductRequest(SPEC, validProduct1,validUser1);
+    }
     @AfterClass
     public void removeTestData(){
-        deleteUserRequest(SPEC, validUser1);
-/*        deleteUserRequest(SPEC, validUser2);
-        deleteUserRequest(SPEC, validUser3);*/
+         deleteUserRequest(SPEC, validUser1);
     }
 
-
+    @DataProvider(name = "productQueryData")
+    public Object[][] createTestData() {
+        return new Object[][] {
+                {"?nome="+validProduct1.nome},
+                {"?_id="+validProduct1._id},
+        };
+    }
 
     @Test
     public void shouldReturProductsAndStatus200(){
@@ -46,13 +42,12 @@ public class GetProductTests extends TestBase{
                 statusCode(200);
     }
 
-    @Test
-    public void shouldReturProductAndStatus200(){
-        Response getProductResponse = getProductsRequest(SPEC);
+    @Test(dataProvider = "productQueryData")
+    public void shouldReturProductAndStatus200(String query){
+        Response getProductResponse = getProductRequest(SPEC,query);
         getProductResponse.
                 then().
                 assertThat().
                 statusCode(200);
     }
-
 }

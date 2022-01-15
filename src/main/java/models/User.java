@@ -10,7 +10,6 @@ public class User {
     public String authToken;
     public String _id;
 
-
     public User(String nome, String email, String password, String administrador){
         this.nome = nome;
         this.email = email;
@@ -18,7 +17,7 @@ public class User {
         this.administrador = administrador;
     }
 
-    public void setUserAuthToken(String authToken){
+    public void setAuthToken(String authToken){
         this.authToken= authToken;
     }
 
@@ -26,7 +25,7 @@ public class User {
         this._id = _id;
     }
 
-    public String getUserCredentialsAsJson(){
+    public String getUserCredentials(){
         JSONObject userJsonRepresentation = new JSONObject();
         userJsonRepresentation.put("email",this.email);
         userJsonRepresentation.put("password",this.password);

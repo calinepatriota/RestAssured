@@ -14,15 +14,17 @@ public class LoginUserTests extends TestBase{
 
     @BeforeClass
     public void postUser(){
-        validUser   = new User("Mario joao2", "mariojoao2@email.com", "1234A@", "true");
+        validUser   = new User("Teste Testando", "testetestando2@email.com", "1234A@", "true");
         postUserRequest(SPEC, validUser);
-       // invalidUser = new User("Mariana", "mariana@email.com", "asdas", "true");
+       invalidUser = new User("Mariana", " ", "asdas", "false");
+       postUserRequest(SPEC, invalidUser);
     }
 
     @AfterClass
     public void removeTestData(){
         deleteUserRequest(SPEC, validUser);
     }
+
     @Test
     public void shouldReturnSuccessMessageAuthTokenAndStatus200(){
         Response loginSuccessResponse = authenticateUserRequest(SPEC, validUser);
@@ -32,18 +34,18 @@ public class LoginUserTests extends TestBase{
                 statusCode(200).
                 body("message", equalTo(Constants.MESSAGE_SUCCESS_LOGIN)).
                 body("authorization", notNullValue());
-
+        loginSuccessResponse.
+                then().log().all();
+        System.out.println(loginSuccessResponse.body().path("authorization"));
     }
 
-
+@Test
     public void shouldReturnFailureMessageAndStatus401(){
 
         Response loginFailureResponse = authenticateUserRequest(SPEC, invalidUser);
         loginFailureResponse.
                 then().
                 assertThat().
-                statusCode(401).
-                body("message", equalTo(Constants.MESSAGE_FAILED_LOGIN)).
-                body("authorization", nullValue());
+                statusCode(400);
     }
 }

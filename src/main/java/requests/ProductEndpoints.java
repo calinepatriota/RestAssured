@@ -7,10 +7,11 @@ import models.User;
 import org.json.simple.JSONObject;
 
 import static io.restassured.RestAssured.given;
+//import static requests.LoginEndpoints.authenticateUserRequest;
 import static requests.RequestBase.getValueFromResponse;
+import static requests.UserEndpoints.authenticateUserRequest;
 
-public class ProductEndpoints {
-
+public class ProductEndpoints  {
 
     public static Response getProductsRequest(RequestSpecification spec){
         Response getProductsResponse =
@@ -21,33 +22,35 @@ public class ProductEndpoints {
         return getProductsResponse;
     }
 
-   public static Response postProductRequest(RequestSpecification spec, Product product){
-        JSONObject productJsonRepresentation = new JSONObject();
-       productJsonRepresentation.put("nome", product.nome);
-       productJsonRepresentation.put("preco",product.preco);
-       productJsonRepresentation.put("descricao", product.descricao);
-       productJsonRepresentation.put("quantidade",product.quantidade);
+    public static Response getProductRequest(RequestSpecification spec, String query){
+        Response getProductsResponse =
+                given().
+                        spec(spec).
+                        when().
+                        get("produtos"+query);
+        return getProductsResponse;
+    }
 
+    public static Response postProductRequest(RequestSpecification spec, Product product,User user){
+        JSONObject productJsonRepresentation = new JSONObject();
+        productJsonRepresentation.put("nome", product.nome);
+        productJsonRepresentation.put("preco",product.preco);
+        productJsonRepresentation.put("descricao", product.descricao);
+        productJsonRepresentation.put("quantidade",product.quantidade);
+        Response authenticateUserRequest = authenticateUserRequest(spec,user);
+       String token= authenticateUserRequest.body().path("authorization");
         Response postProductRequest =
                 given().
                         spec(spec).
-                        header("Content-Type","application/json").
+                        headers("Authorization",token,
+                                "Content-Type","application/json").
                         and().
                         body(productJsonRepresentation.toJSONString()).
                         when().
                         post("produtos");
-
+        postProductRequest.then().log().all();
         product.setProductId(getValueFromResponse(postProductRequest, "_id"));
         return postProductRequest;
     }
-
-    public static Response deleteUserRequest(RequestSpecification spec, User user){
-        Response deleteUserResponse =
-                given().
-                        spec(spec).
-                        header("Content-Type","application/json").
-                        when().
-                        delete("usuarios/"+user._id);
-        return deleteUserResponse;
-    }
 }
+
