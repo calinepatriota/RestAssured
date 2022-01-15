@@ -56,7 +56,7 @@ public class GetUserTests extends TestBase{
             assertThat().
             statusCode(200).
             body("quantidade", instanceOf(Integer.class)).
-            body("quantidade", equalTo(96)).
+            body("quantidade", equalTo(98)).
             body("usuarios", instanceOf(List.class));
     }
 
