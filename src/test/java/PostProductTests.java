@@ -6,6 +6,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import static org.hamcrest.Matchers.equalTo;
+import static requests.ProductEndpoints.deleteProductRequest;
 import static requests.ProductEndpoints.postProductRequest;
 import static requests.UserEndpoints.deleteUserRequest;
 import static requests.UserEndpoints.postUserRequest;
@@ -20,7 +21,7 @@ public class PostProductTests extends TestBase{
 
     @BeforeClass
     public void generateTestData(){
-        validUser   = new User("Mario joao2", "mariojoao2@email.com", "1234A@", "true");
+        validUser   = new User("BiaAana", "biaana2@email.com", "1234A@", "true");
         postUserRequest(SPEC, validUser);
         validUserNotAdm = new User("Mario joao2", "mariojoao2@email.com", "1234A@", "false");
         postUserRequest(SPEC, validUserNotAdm);
@@ -28,7 +29,7 @@ public class PostProductTests extends TestBase{
 
     @Test
     public void shouldPostProductAndStatus200(){
-        validProduct1   = new Product(" camamesa2ebanhot", 142,"camame2saebatnho", 1);
+        validProduct1   = new Product(" PC24", 142,"PC24", 1);
         Response postProductRequest= postProductRequest(SPEC, validProduct1,validUser);
         postProductRequest.
                 then().
@@ -39,7 +40,7 @@ public class PostProductTests extends TestBase{
 
     @Test
     public void shouldPostProductAndStatus403(){
-        validProduct1   = new Product("sofat", 142,"sofat", 1);
+        validProduct1   = new Product("COMOUTER2", 142,"COMPUTER2", 1);
         Response postProductRequest= postProductRequest(SPEC, validProduct1,validUserNotAdm);
         postProductRequest.
                 then().
@@ -50,7 +51,7 @@ public class PostProductTests extends TestBase{
 
     @AfterClass
     public void removeTestData(){
-        deleteUserRequest(SPEC, validUser);
+        deleteProductRequest(SPEC,validProduct1,validUser);
         deleteUserRequest(SPEC, validUser);
     }
 }
