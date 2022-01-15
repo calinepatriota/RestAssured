@@ -15,22 +15,20 @@ public class PostProductTests extends TestBase{
 
     private Product validProduct1;
     private User validUser;
+    private User validUserNotAdm;
 
 
     @BeforeClass
     public void generateTestData(){
         validUser   = new User("Mario joao2", "mariojoao2@email.com", "1234A@", "true");
-        Response postUserRequest = postUserRequest(SPEC, validUser);
-        postUserRequest.
-                then().
-                assertThat().
-                statusCode(201);
-        postUserRequest.then().log().all();
+        postUserRequest(SPEC, validUser);
+        validUserNotAdm = new User("Mario joao2", "mariojoao2@email.com", "1234A@", "false");
+        postUserRequest(SPEC, validUserNotAdm);
     }
 
     @Test
     public void shouldPostProductAndStatus200(){
-        validProduct1   = new Product(" camamesaebanho", 142,"camamesaebanho", 1);
+        validProduct1   = new Product(" camamesa2ebanhot", 142,"camame2saebatnho", 1);
         Response postProductRequest= postProductRequest(SPEC, validProduct1,validUser);
         postProductRequest.
                 then().
@@ -39,8 +37,20 @@ public class PostProductTests extends TestBase{
         postProductRequest.then().log().all();
     }
 
+    @Test
+    public void shouldPostProductAndStatus403(){
+        validProduct1   = new Product("sofat", 142,"sofat", 1);
+        Response postProductRequest= postProductRequest(SPEC, validProduct1,validUserNotAdm);
+        postProductRequest.
+                then().
+                assertThat().
+                statusCode(403);
+        postProductRequest.then().log().all();
+    }
+
     @AfterClass
     public void removeTestData(){
+        deleteUserRequest(SPEC, validUser);
         deleteUserRequest(SPEC, validUser);
     }
 }

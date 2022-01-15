@@ -5,6 +5,8 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import static org.hamcrest.Matchers.equalTo;
 import static requests.ProductEndpoints.*;
 import static requests.UserEndpoints.*;
 
@@ -17,12 +19,13 @@ public class GetProductTests extends TestBase{
     public void generateTestData(){
         validUser1   = new User("Bia Silvaa", "biasilva@email.com", "1234@A", "true");
         postUserRequest(SPEC, validUser1);
-        validProduct1   = new Product(" mesabanhotoalha", 142,"mesabanhotoalha", 1);
+        validProduct1   = new Product(" mesaban22hotoalha2", 142,"mes2aba2nhotoalha2", 1);
         postProductRequest(SPEC, validProduct1,validUser1);
     }
     @AfterClass
     public void removeTestData(){
-         deleteUserRequest(SPEC, validUser1);
+        deleteProductRequest(SPEC,validProduct1,validUser1);
+        deleteUserRequest(SPEC, validUser1);
     }
 
     @DataProvider(name = "productQueryData")
@@ -49,5 +52,16 @@ public class GetProductTests extends TestBase{
                 then().
                 assertThat().
                 statusCode(200);
+    }
+
+    @Test
+    public void shouldPostProductAndValidateQuantity(){
+        Response getProductResponse = getProductsRequest(SPEC);
+        getProductResponse.
+                then().
+                assertThat().
+                statusCode(200).
+                body("quantidade", equalTo(getProductResponse.body().path("quantidade")));
+        getProductResponse.then().log().all();
     }
 }

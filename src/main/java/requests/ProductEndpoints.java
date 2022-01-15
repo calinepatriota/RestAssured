@@ -5,9 +5,7 @@ import io.restassured.specification.RequestSpecification;
 import models.Product;
 import models.User;
 import org.json.simple.JSONObject;
-
 import static io.restassured.RestAssured.given;
-//import static requests.LoginEndpoints.authenticateUserRequest;
 import static requests.RequestBase.getValueFromResponse;
 import static requests.UserEndpoints.authenticateUserRequest;
 
@@ -51,6 +49,20 @@ public class ProductEndpoints  {
         postProductRequest.then().log().all();
         product.setProductId(getValueFromResponse(postProductRequest, "_id"));
         return postProductRequest;
+    }
+
+    public static Response deleteProductRequest(RequestSpecification spec, Product product,User user){
+        Response authenticateUserRequest = authenticateUserRequest(spec,user);
+        String token= authenticateUserRequest.body().path("authorization");
+
+        Response deleteProductResponse =
+                given().
+                        spec(spec).
+                        header("Authorization",token).
+                        pathParam("_id",product._id).
+                        when().
+                        delete("produtos/{_id}");
+        return deleteProductResponse;
     }
 }
 
