@@ -1,7 +1,9 @@
 import io.restassured.response.Response;
 import models.Product;
 import models.User;
+import org.testng.ITestResult;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -17,6 +19,7 @@ public class PostProductTests extends TestBase{
     private Product validProduct1;
     private User validUser;
     private User validUserNotAdm;
+    private String methodName;
 
 
     @BeforeClass
@@ -45,13 +48,22 @@ public class PostProductTests extends TestBase{
         postProductRequest.
                 then().
                 assertThat().
-                statusCode(403);
+                statusCode(403).
+                body("message", equalTo(Constants.MESSAGE_NOT_ADMIN_USER));
         postProductRequest.then().log().all();
     }
 
     @AfterClass
     public void removeTestData(){
-        deleteProductRequest(SPEC,validProduct1,validUser);
-        deleteUserRequest(SPEC, validUser);
+        if(!methodName.equals("shouldPostProductAndStatus403")){
+            deleteProductRequest(SPEC,validProduct1,validUser);
+            deleteUserRequest(SPEC, validUser);
+        }
+    }
+
+    @AfterMethod
+    public void afterMethod(ITestResult result) {
+        System.out.println("method name:" + result.getMethod().getMethodName());
+        methodName =  result.getMethod().getMethodName();
     }
 }

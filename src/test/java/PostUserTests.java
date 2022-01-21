@@ -1,7 +1,6 @@
 import io.restassured.response.Response;
 import models.User;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import static org.hamcrest.Matchers.*;
 import static requests.UserEndpoints.*;
